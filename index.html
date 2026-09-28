@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Malvin Winston Sidharta — Lorem Ipsum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0d; --bg-soft:#131317; --text:#f2f0ea; --text-dim:rgba(242,240,234,.62);
+    --accent:#d4ff3f; --accent2:#8f7bff; --line:rgba(242,240,234,.12); --radius:22px;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; scroll-padding-top:70px; }
+  body{
+    background:var(--bg); color:var(--text); font-family:'Space Grotesk',system-ui,sans-serif;
+    overflow-x:hidden; min-height:100%;
+  }
+  h1,h2,h3{ font-weight:700; letter-spacing:-0.02em; }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; }
+  ::selection{ background:var(--accent); color:#0a0a0d; }
+
+  canvas#bg{ position:fixed; inset:0; width:100%; height:100%; z-index:0; }
+
+  /* ---------- enter screen ---------- */
+  #enter{
+    position:fixed; inset:0; z-index:50; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:22px; background:var(--bg);
+    cursor:pointer; transition:opacity .8s ease, transform .9s cubic-bezier(.6,0,.3,1);
+  }
+  #enter .mark{ font-size:clamp(30px,7vw,72px); font-weight:700; letter-spacing:-0.03em; text-align:center; padding:0 6vw; line-height:1.05;
+    background:linear-gradient(100deg,var(--text) 30%,var(--accent) 65%,var(--accent2) 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  #enter .role{ color:var(--text-dim); font-size:15px; letter-spacing:.14em; text-transform:uppercase; }
+  #enter .btn{
+    width:72px; height:72px; border-radius:50%; border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:13px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--text-dim); animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(212,255,63,.25);} 50%{ box-shadow:0 0 0 14px rgba(212,255,63,0);} }
+  body.entered #enter{ opacity:0; transform:scale(1.08); pointer-events:none; }
+
+  main{ position:relative; z-index:1; opacity:0; transition:opacity 1s ease .15s; }
+  body.entered main{ opacity:1; }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:20; display:flex; align-items:center;
+    justify-content:space-between; padding:20px 6vw; backdrop-filter:blur(10px);
+    background:rgba(10,10,13,.45); border-bottom:1px solid var(--line);
+  }
+  nav .logo{ font-weight:700; font-size:18px; }
+  nav .links{ display:flex; gap:28px; font-size:14px; color:var(--text-dim); }
+  nav .links a:hover{ color:var(--accent); }
+  @media (max-width:560px){ nav .links{ gap:16px; font-size:13px; } }
+
+  section{ position:relative; padding:150px 6vw 90px; max-width:1180px; margin:0 auto; }
+
+  /* ---------- hero ---------- */
+  #hero{ min-height:92vh; display:flex; flex-direction:column; justify-content:center; padding-top:110px; }
+  #hero h1{ font-size:clamp(40px,7vw,92px); line-height:1.02; }
+  #hero h1 span{ color:var(--accent); }
+  #hero p{ margin-top:22px; max-width:520px; color:var(--text-dim); font-size:18px; line-height:1.5; }
+  .cta-row{ display:flex; gap:16px; margin-top:36px; flex-wrap:wrap; }
+  .btn-pill{
+    padding:15px 30px; border-radius:999px; font-size:14px; font-weight:500; letter-spacing:.02em;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+  }
+  .btn-pill.primary{ background:var(--accent); color:#0a0a0d; }
+  .btn-pill.ghost{ border:1px solid var(--line); color:var(--text); }
+  .btn-pill:hover{ transform:translateY(-4px); box-shadow:0 10px 24px rgba(212,255,63,.18); }
+
+  /* ---------- reveal ---------- */
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s cubic-bezier(.2,.7,.3,1); }
+  .reveal.visible{ opacity:1; transform:none; }
+
+  /* ---------- about ---------- */
+  #about .grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:60px; align-items:start; }
+  #about p{ color:var(--text-dim); font-size:17px; line-height:1.7; }
+  .pills{ display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+  .pill{ padding:9px 16px; border-radius:999px; border:1px solid var(--line); font-size:13px; color:var(--text-dim); }
+  @media (max-width:760px){ #about .grid{ grid-template-columns:1fr; } }
+
+  /* ---------- work ---------- */
+  h2.sec-title{ font-size:clamp(28px,4vw,44px); margin-bottom:44px; }
+  .work-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; }
+  .card{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:var(--radius);
+    padding:30px; transition:transform .4s cubic-bezier(.2,.7,.3,1), border-color .4s ease, box-shadow .4s ease;
+  }
+  .card:hover{ transform:translateY(-8px); border-color:rgba(212,255,63,.4); box-shadow:0 20px 40px rgba(0,0,0,.35); }
+  .card .tag{ font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent2); }
+  .card h3{ font-size:22px; margin-top:12px; }
+  .card p{ color:var(--text-dim); font-size:14.5px; line-height:1.6; margin-top:10px; }
+
+  /* ---------- contact ---------- */
+  #contact .box{
+    background:linear-gradient(135deg,rgba(212,255,63,.1),rgba(143,123,255,.1));
+    border:1px solid var(--line); border-radius:calc(var(--radius) + 10px);
+    padding:60px 6vw; text-align:center;
+  }
+  #contact h2{ font-size:clamp(30px,5vw,54px); }
+  #contact .box a.mail{ display:inline-block; margin-top:26px; font-size:20px; border-bottom:1px solid var(--accent); }
+  .social-row{ display:flex; gap:22px; justify-content:center; margin-top:30px; font-size:14px; color:var(--text-dim); }
+  .social-row a:hover{ color:var(--accent); }
+
+  footer{ text-align:center; padding:40px 6vw 60px; color:var(--text-dim); font-size:13px; position:relative; z-index:1; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    #enter, main, .reveal, .card, .btn-pill{ transition-duration:.01s !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div id="enter">
+  <div class="mark">MALVIN WINSTON SIDHARTA</div>
+  <div class="role">Lorem Ipsum Dolor</div>
+  <div class="btn">Lorem</div>
+</div>
+
+<main>
+  <nav>
+    <div class="logo">MWS</div>
+    <div class="links"><a href="#work">Lorem</a><a href="#about">Ipsum</a><a href="#contact">Dolor</a></div>
+  </nav>
+
+  <section id="hero">
+    <h1 class="reveal">Lorem ipsum<br>dolor sit <span>amet.</span></h1>
+    <p class="reveal">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <div class="cta-row reveal">
+      <a href="#work" class="btn-pill primary">Lorem Ipsum</a>
+      <a href="#contact" class="btn-pill ghost">Dolor Sit</a>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="grid">
+      <div class="reveal">
+        <h2 class="sec-title">Lorem Ipsum</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure.</p>
+      </div>
+      <div class="reveal">
+        <div class="pills">
+          <div class="pill">Lorem</div><div class="pill">Ipsum</div><div class="pill">Dolor</div>
+          <div class="pill">Sit Amet</div><div class="pill">Consectetur</div><div class="pill">Elit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <h2 class="sec-title reveal">Lorem Ipsum Dolor</h2>
+    <div class="work-grid">
+      <div class="card reveal">
+        <div class="tag">Lorem</div>
+        <h3>Lorem Ipsum Dolor</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p>
+      </div>
+      <div class="card reveal">
+        <div class="tag">Ipsum</div>
+        <h3>Sit Amet Consectetur</h3>
+        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.</p>
+      </div>
+      <div class="card reveal">
+        <div class="tag">Dolor</div>
+        <h3>Adipiscing Elit Sed</h3>
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="box reveal">
+      <h2>Lorem ipsum<br>dolor sit amet.</h2>
+      <a class="mail" href="mailto:lorem@ipsum.dev">lorem@ipsum.dev</a>
+      <div class="social-row">
+        <a href="#">Lorem</a><a href="#">Ipsum</a><a href="#">Dolor</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Malvin Winston Sidharta. Lorem ipsum dolor sit amet.</footer>
+</main>
+
+<script>
+  // enter screen
+  document.getElementById('enter').addEventListener('click', function(){
+    document.body.classList.add('entered');
+  }, { once:true });
+
+  // scroll reveal
+  var els = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold:0.15 });
+  els.forEach(function(el){ io.observe(el); });
+
+  // interactive particle background
+  var canvas = document.getElementById('bg');
+  var ctx = canvas.getContext('2d');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var w, h, particles = [];
+  var mouse = { x:-9999, y:-9999 };
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  function init(){
+    resize();
+    var count = Math.min(90, Math.floor((w*h)/16000));
+    particles = [];
+    for(var i=0;i<count;i++){
+      particles.push({
+        x: Math.random()*w, y: Math.random()*h,
+        vx: (Math.random()-0.5)*0.35, vy: (Math.random()-0.5)*0.35
+      });
+    }
+  }
+  function step(){
+    ctx.clearRect(0,0,w,h);
+    for(var i=0;i<particles.length;i++){
+      var p = particles[i];
+      var dx = p.x - mouse.x, dy = p.y - mouse.y;
+      var dist = Math.sqrt(dx*dx+dy*dy);
+      if(dist < 130){
+        var force = (130-dist)/130 * 0.6;
+        p.vx += (dx/(dist||1)) * force * 0.05;
+        p.vy += (dy/(dist||1)) * force * 0.05;
+      }
+      p.vx *= 0.98; p.vy *= 0.98;
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0) p.x = w; if(p.x > w) p.x = 0;
+      if(p.y < 0) p.y = h; if(p.y > h) p.y = 0;
+    }
+    for(var i=0;i<particles.length;i++){
+      for(var j=i+1;j<particles.length;j++){
+        var a = particles[i], b = particles[j];
+        var ddx = a.x-b.x, ddy = a.y-b.y;
+        var d = Math.sqrt(ddx*ddx+ddy*ddy);
+        if(d < 120){
+          ctx.strokeStyle = 'rgba(212,255,63,' + ((1-d/120)*0.16) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+      ctx.fillStyle = 'rgba(242,240,234,0.5)';
+      ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, 1.6, 0, Math.PI*2); ctx.fill();
+    }
+    if(!reduced) requestAnimationFrame(step);
+  }
+
+  window.addEventListener('resize', init);
+  window.addEventListener('mousemove', function(e){ mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('touchmove', function(e){ if(e.touches[0]){ mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; } }, {passive:true});
+
+  init();
+  if(reduced){ step(); } else { requestAnimationFrame(step); }
+</script>
+</body>
+</html>
